@@ -52,7 +52,6 @@ def client_communication(person):
 
     while True:  # wait for any messages from person
         msg = client.recv(BUFSIZ)
-        print(f'{name}: ', msg.decode('utf8'))
 
         if msg == bytes('{quit}', 'utf8'):  # if message is quit disconnect client
             client.close()

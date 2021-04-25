@@ -2,18 +2,23 @@ from client import Client
 import time
 from threading import Thread
 
-c1 = Client('Tim')
+c1 = Client('Steve')
 c2 = Client('Joe')
 
 
 def update_messages():
+    """
+    updates the local list of messages
+    :return: None
+    """
     msgs = []
     run = True
     while run:
-        time.sleep(0.1)
-        new_messages = c1.get_messages()
-        msgs.extend(c1.get_messages())
-        for msg in new_messages:
+        time.sleep(0.1)  # update ever 1/10 of a second
+        new_messages = c1.get_messages()  # get any messages from client
+        msgs.extend(c1.get_messages())  # add to local list of messages
+
+        for msg in new_messages:  # display new messages
             print(msg)
             if msg == '{quit}':
                 run = False
