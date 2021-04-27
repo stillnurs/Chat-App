@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, session, redirect, request
 from client import Client
 
 NAME_KEY = 'name'
+client = None
 app = Flask(__name__)
 app.secret_key = 'hellomynameissteveandyouwontguessthis'
 
@@ -26,13 +27,17 @@ def home():
     if NAME_KEY not in session:
         return redirect(url_for('login'))
 
+    client = Client(session[NAME_KEY])
+
     return render_template("index.html", **{"login": True, "session": session})
 
 
-@app.route('/run', method=['GET'])
+@app.route('/run', methods=['GET'])
 def run(url=None):
+    global client
     msg = request.args.get('val')
-    print(msg)
+    if client != None:
+        client.send_message(msg)
     return 'none'
 
 
