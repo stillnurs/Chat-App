@@ -1,6 +1,4 @@
-from flask import session
 from flask_socketio import SocketIO
-import time
 from application import create_app
 from application.database import DataBase
 import config
@@ -14,7 +12,7 @@ socketio = SocketIO(app)  # used for user communication
 
 
 @socketio.on('event')
-def handle_my_custom_event(json, methods=None):
+def handle_my_custom_event(json, methods=['GET', 'POST']):
     """
     handles saving messages once received from web server
     and sending message to other clients
@@ -22,8 +20,6 @@ def handle_my_custom_event(json, methods=None):
     :param methods: POST GET
     :return: None
     """
-    if methods is None:
-        methods = ['GET', 'POST']
     data = dict(json)
     if "name" in data:
         db = DataBase()

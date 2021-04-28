@@ -1,5 +1,4 @@
-from flask import Blueprint
-from flask import Flask, render_template, url_for, redirect, request, session, jsonify, flash, Blueprint
+from flask import render_template, url_for, redirect, request, session, jsonify, flash, Blueprint
 from .database import DataBase
 
 view = Blueprint("views", __name__)
@@ -10,7 +9,6 @@ MSG_LIMIT = 20
 
 
 # VIEWS
-
 
 @view.route("/login", methods=["POST", "GET"])
 def login():
@@ -43,7 +41,7 @@ def logout():
 
 
 @view.route("/")
-@view.route("/home", methods=['GET', 'POST'])
+@view.route("/home")
 def home():
     """
     displays home page if logged in
@@ -55,7 +53,7 @@ def home():
     return render_template("index.html", **{"session": session})
 
 
-@view.route("/history", methods=['GET', 'POST'])
+@view.route("/history")
 def history():
     if NAME_KEY not in session:
         flash("0Please login before viewing message history")
@@ -66,7 +64,7 @@ def history():
     return render_template("history.html", **{"history": json_messages})
 
 
-@view.route("/get_name", methods=['GET', 'POST'])
+@view.route("/get_name")
 def get_name():
     """
     :return: a json object storing name of logged in user
@@ -77,7 +75,7 @@ def get_name():
     return jsonify(data)
 
 
-@view.route("/get_messages", methods=['GET', 'POST'])
+@view.route("/get_messages")
 def get_messages():
     """
     :return: all messages stored in database
@@ -89,7 +87,7 @@ def get_messages():
     return jsonify(messages)
 
 
-@view.route("/get_history", methods=['GET', 'POST'])
+@view.route("/get_history")
 def get_history(name):
     """
     :param name: str
