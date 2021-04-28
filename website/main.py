@@ -1,45 +1,37 @@
-from flask import Flask, render_template, url_for, session, redirect, request
-from client import Client
+from flask import session
+from flask_socketio import SocketIO
+import time
+from application import create_app
+from application.database import DataBase
+import config
 
-NAME_KEY = 'name'
-client = None
-app = Flask(__name__)
-app.secret_key = 'hellomynameissteveandyouwontguessthis'
-
-
-@app.route("/login", methods=['POST', 'GET'])
-def login():
-    if request.method == 'POST':
-        session[NAME_KEY] = request.form['inputName']
-        return redirect(url_for('home'))
-    return render_template('login.html', **{'session': session})
+# SETUP
+app = create_app()
+socketio = SocketIO(app)  # used for user communication
 
 
-@app.route('/logout')
-def logout():
-    session.pop(NAME_KEY, None)
-    return redirect(url_for('login'))
+# COMMUNICATION FUNCTIONS
 
 
-@app.route("/")
-@app.route("/home")
-def home():
-    if NAME_KEY not in session:
-        return redirect(url_for('login'))
+@socketio.on('event')
+def handle_my_custom_event(json, methods=None):
+    """
+    handles saving messages once received from web server
+    and sending message to other clients
+    :param json: json
+    :param methods: POST GET
+    :return: None
+    """
+    if methods is None:
+        methods = ['GET', 'POST']
+    data = dict(json)
+    if "name" in data:
+        db = DataBase()
+        db.save_message(data["name"], data["message"])
 
-    client = Client(session[NAME_KEY])
-
-    return render_template("index.html", **{"login": True, "session": session})
+    socketio.emit('message response', json)
 
 
-@app.route('/run', methods=['GET'])
-def run(url=None):
-    global client
-    msg = request.args.get('val')
-    if client != None:
-        client.send_message(msg)
-    return 'none'
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# MAINLINE
+if __name__ == "__main__":  # start the web server
+    socketio.run(app, debug=True, host=str(config.Config.SERVER))
