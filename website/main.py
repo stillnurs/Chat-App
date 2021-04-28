@@ -2,13 +2,10 @@ from flask_socketio import SocketIO
 from application import create_app
 from application.database import DataBase
 import config
-import eventlet
-eventlet.monkey_patch()
-
 
 # SETUP
 app = create_app()
-socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins='*')  # used for user communication
+socketio = SocketIO(app, cors_allowed_origins='*')  # used for user communication
 
 
 # COMMUNICATION FUNCTIONS

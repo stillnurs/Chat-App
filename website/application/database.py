@@ -13,6 +13,7 @@ class DataBase:
     """
     used to connect, write to and read from a local sqlite3 database
     """
+
     def __init__(self):
         """
         try to connect to file and create cursor
@@ -62,7 +63,7 @@ class DataBase:
         results = []
         for r in sorted(result, key=lambda x: x[3], reverse=True)[:limit]:
             name, content, date, _id = r
-            data = {"name":name, "message":content, "time":str(date)}
+            data = {"name": name, "message": content, "time": str(date)}
             results.append(data)
 
         return list(reversed(results))
@@ -86,4 +87,3 @@ class DataBase:
         query = f"INSERT INTO {PLAYLIST_TABLE} VALUES (?, ?, ?, ?)"
         self.cursor.execute(query, (name, msg, datetime.now(), None))
         self.conn.commit()
-

@@ -41,7 +41,7 @@ def logout():
 
 
 @view.route("/")
-@view.route("home/", methods=['POST', 'GET'])
+@view.route("home/")
 def home():
     """
     displays home page if logged in
